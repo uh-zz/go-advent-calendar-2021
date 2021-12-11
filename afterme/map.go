@@ -26,15 +26,21 @@ func NewMapStatus(p, b, m *point) *MapStatus {
 	}
 }
 
-// MoveFunc func(*MapStatus)型
-type MoveFunc func(*MapStatus)
+// Option func(*MapStatus)型
+type Option func(*MapStatus)
 
-// Union 空レシーバ
-func (m MoveFunc) Union() {}
+// Right 右に１つ進む
+func Right() Option {
+	return func(m *MapStatus) {
+		m.move(1, 0)
+	}
+}
 
-// Command 抽象コマンド
-type Command interface {
-	Union()
+// Down 下に１つ進む
+func Down() Option {
+	return func(m *MapStatus) {
+		m.move(0, 1)
+	}
 }
 
 // move 人の移動
@@ -50,12 +56,10 @@ func (m *MapStatus) move(x, y int) {
 	}
 }
 
-// Right 右へ進む
-func Right(m *MapStatus) {
-	m.move(1, 0)
-}
-
-// Down 下へ進む
-func Down(m *MapStatus) {
-	m.move(0, 1)
+// NewMapStatusWithOption アクション後のマップ状態
+func NewMapStatusWithOption(m *MapStatus, options ...Option) *MapStatus {
+	for _, option := range options {
+		option(m)
+	}
+	return m
 }

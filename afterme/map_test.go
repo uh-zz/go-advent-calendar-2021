@@ -6,30 +6,20 @@ import (
 )
 
 func Test(t *testing.T) {
-	var cmds []Command
 
-	player := NewPoint(1, 0)
-	burden := NewPoint(3, 1)
-	mark := NewPoint(5, 1)
+	player := NewPoint(0, 0)
+	burden := NewPoint(1, 1)
+	mark := NewPoint(1, 3)
 
-	m := NewMapStatus(player, burden, mark)
+	beforeM := NewMapStatus(player, burden, mark)
 
-	fmt.Printf("before:%+v\n", m) // before: &{1 0 3 1 5 1}
+	fmt.Printf("before:%+v\n", beforeM) // before:&{player:{X:0 Y:0} burden:{X:1 Y:1} mark:{X:1 Y:3}}
 
-	cmds = append(cmds, MoveFunc(Right))
-	cmds = append(cmds, MoveFunc(Down))
-	cmds = append(cmds, MoveFunc(Right))
-	cmds = append(cmds, MoveFunc(Right))
+	afterM := NewMapStatusWithOption(
+		beforeM,
+		Right(),
+		Down(),
+		Down())
 
-	cmds = cmds[:len(cmds)-1] // １つ戻る
-
-	for _, cmd := range cmds {
-		switch t := cmd.(type) {
-		case MoveFunc:
-			t(m)
-		}
-
-	}
-
-	fmt.Println("after:", m) // after: &{3 1 4 1 5 1}
+	fmt.Printf("after:%+v\n", afterM) // after:&{player:{X:1 Y:2} burden:{X:1 Y:3} mark:{X:1 Y:3}}
 }
